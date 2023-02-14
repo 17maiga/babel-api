@@ -1,13 +1,19 @@
 {
-  "name": "babel-scrap",
+  "name": "babel-api",
   "version": "1.0.0",
   "description": "An Express.js API for the Babel Library",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "author": "17maiga",
+  "author": {
+    "name": "17maiga",
+    "email": "henri.saudubray@gmail.com"
+  },
   "license": "ISC",
+  "repository": {
+    "url": "https://github.com/17maiga/babel-api"
+  },
   "dependencies": {
     "express": "^4.18.2"
   }
