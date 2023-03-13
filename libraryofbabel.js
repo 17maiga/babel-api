@@ -1,3 +1,17 @@
+function validateAddress(address) {
+  let addressArray = address.split(':');
+  if (addressArray.length !== 5) {
+    return false;
+  }
+  if (Number.isNaN(addressArray[1]) || addressArray[1] < 1 || addressArray[1] > 4)
+    return false;
+  if (Number.isNaN(addressArray[2]) || addressArray[2] < 1 || addressArray[2] > 5)
+    return false;
+  if (Number.isNaN(addressArray[3]) || addressArray[3] < 1 || addressArray[3] > 32)
+    return false;
+  return !(Number.isNaN(addressArray[4]) || addressArray[4] < 1 || addressArray[4] > 410);
+}
+
 const length_of_page = 3200;
 const length_of_title = 25;
 
@@ -138,6 +152,7 @@ function searchTitle(search_str) {
 }
 
 module.exports = {
+  validateAddress,
   length_of_page,
   length_of_title,
   search,

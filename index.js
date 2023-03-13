@@ -6,8 +6,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/api/page/:address", (req, res) => {
+  if (!library.validateAddress(req.params["address"])) {
+    res.status(400);
+    res.send(JSON.stringify({"error": "Invalid address"}));
+    return;
+  }
   res.setHeader("Content-Type", "application/json");
-  console.log("Received request for page: " + req.params["address"]);
   res.send(JSON.stringify({
     "page": library.getPage(req.params["address"])
   }));
@@ -28,6 +32,11 @@ app.get("/api/find-title/", (req, res) => {
 });
 
 app.get("/api/get-title/:address", (req, res) => {
+  if (!library.validateAddress(req.params["address"])) {
+    res.status(400);
+    res.send(JSON.stringify({"error": "Invalid address"}));
+    return;
+  }
   res.setHeader("Content-Type", "application/json");
   res.send(JSON.stringify({
     "title": library.getTitle(req.params["address"])
