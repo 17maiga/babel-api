@@ -1,9 +1,14 @@
 'use strict';
 const express = require("express");
+const compression = require("compression");
+const helmet = require("helmet");
 const library = require("./libraryofbabel");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(compression());
+app.use(helmet());
 
 app.get("/api/page/:address", (req, res) => {
   if (!library.validateAddress(req.params["address"])) {
