@@ -1,15 +1,10 @@
 function validateAddress(address) {
-  let addressArray = address.split(':');
-  if (addressArray.length !== 5) {
-    return false;
-  }
-  if (Number.isNaN(addressArray[1]) || addressArray[1] < 1 || addressArray[1] > 4)
-    return false;
-  if (Number.isNaN(addressArray[2]) || addressArray[2] < 1 || addressArray[2] > 5)
-    return false;
-  if (Number.isNaN(addressArray[3]) || addressArray[3] < 1 || addressArray[3] > 32)
-    return false;
-  return !(Number.isNaN(addressArray[4]) || addressArray[4] < 1 || addressArray[4] > 410);
+  let a = address.split(":");
+  if (a.length !== 5) return false;
+  if (Number.isNaN(a[1]) || a[1] < 0 || a[1] > 3) return false;
+  if (Number.isNaN(a[2]) || a[2] < 0 || a[2] > 4) return false;
+  if (Number.isNaN(a[3]) || a[3] < 0 || a[3] > 31) return false;
+  return !(Number.isNaN(a[4]) || a[4] < 0 || a[4] > 409);
 }
 
 const length_of_page = 3200;
@@ -28,65 +23,82 @@ function seededRandom(min, max) {
 }
 
 function hashCode(s) {
-  let hash = 0, i, chr, len;
+  let hash = 0,
+    i,
+    chr,
+    len;
   if (s.length === 0) return hash;
   for (i = 0, len = s.length; i < len; i++) {
     chr = s.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
+    hash = (hash << 5) - hash + chr;
     hash |= 0; // Convert to 32bit integer
   }
   return hash;
 }
 
 function pad(s, size) {
-  while (s.length < size) s = "0"+s;
+  while (s.length < size) s = "0" + s;
   return s;
 }
 
-Number.prototype.mod = function(n) {
+Number.prototype.mod = function (n) {
   return ((this % n) + n) % n;
 };
 
-let an = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let an = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 // digs must be the same length as an
-let digs = 'abcdefghijklmnopqrstuvwxyz, .aeiouy ';
+let digs = "abcdefghijklmnopqrstuvwxyz, .aeiouy ";
 
 function search(search_str) {
   // randomly generate location numbers
-  let wall = '' + parseInt(Math.random() * 3 + 1)
-  let shelf = '' + parseInt(Math.random() * 4 + 1)
-  let volume = pad('' + parseInt(Math.random() * 31 + 1), 2)
-  let page = pad('' + parseInt(Math.random() * 409 + 1), 3)
-  let locHash = hashCode((wall + shelf + volume + page));
-  let hex = '';
+  let wall = "" + parseInt(Math.random() * 3 + 1);
+  let shelf = "" + parseInt(Math.random() * 4 + 1);
+  let volume = pad("" + parseInt(Math.random() * 31 + 1), 2);
+  let page = pad("" + parseInt(Math.random() * 409 + 1), 3);
+  let locHash = hashCode(wall + shelf + volume + page);
+  let hex = "";
   let depth = parseInt(Math.random() * (length_of_page - search_str.length));
-  for (let x = 0; x < depth; x++){
-    search_str = digs[parseInt(Math.random()*digs.length)] + search_str;
+  for (let x = 0; x < depth; x++) {
+    search_str = digs[parseInt(Math.random() * digs.length)] + search_str;
   }
   // hash of loc will be used to create a seeded RNG
   seed = Math.abs(locHash);
-  for (let i = 0; i < search_str.length; i++){
+  for (let i = 0; i < search_str.length; i++) {
     let index = digs.indexOf(search_str[i]);
     //for each calculated value of the rng, it will be added to the index value and modded to len of an
     let rand = seededRandom(0, digs.length);
-    let newIndex = (index+parseInt(rand)).mod(an.length);
+    let newIndex = (index + parseInt(rand)).mod(an.length);
     let newChar = an[newIndex];
     //hex will be built from the indexes translated into an
     hex += newChar;
   }
-  return hex+':'+wall+':'+shelf+':'+parseInt(volume)+':'+parseInt(page)
+  return (
+    hex +
+    ":" +
+    wall +
+    ":" +
+    shelf +
+    ":" +
+    parseInt(volume) +
+    ":" +
+    parseInt(page)
+  );
 }
 
 function getPage(address) {
   //for each char of hex, it will be turned into the index value in the an string
-  let addressArray = address.split(':');
+  let addressArray = address.split(":");
   let hex = addressArray[0];
-  let locHash = hashCode(addressArray[1] + addressArray[2] +
-    pad(addressArray[3], 2) + pad(addressArray[4], 3));
+  let locHash = hashCode(
+    addressArray[1] +
+      addressArray[2] +
+      pad(addressArray[3], 2) +
+      pad(addressArray[4], 3)
+  );
   //hash of loc will be used to create a seeded RNG
   seed = Math.abs(locHash);
-  let result = '';
-  for (let i = 0; i < hex.length; i++){
+  let result = "";
+  for (let i = 0; i < hex.length; i++) {
     let index = an.indexOf(hex[i]);
     //for each calculated value of the rng, it will be subtracted from the index value and modded to len of digs
     let rand = seededRandom(0, an.length);
@@ -97,29 +109,30 @@ function getPage(address) {
   }
   //any leftover space will be filled with random numbers seeded by the hash of the result so far
   seed = Math.abs(hashCode(result));
-  while (result.length < length_of_page){
+  while (result.length < length_of_page) {
     let index = parseInt(seededRandom(0, digs.length));
     result += digs[index];
   }
-  return result.substr(result.length-length_of_page);
+  return result.substr(result.length - length_of_page);
 }
 
 function getTitle(address) {
-  let addressArray = address.split(':');
+  let addressArray = address.split(":");
   let hex = addressArray[0];
-  let locHash = hashCode(addressArray[1]+addressArray[2]+
-    pad(addressArray[3], 2)+4);
+  let locHash = hashCode(
+    addressArray[1] + addressArray[2] + pad(addressArray[3], 2) + 4
+  );
   seed = Math.abs(locHash);
-  let result = '';
-  for (let i = 0; i < hex.length; i++){
+  let result = "";
+  for (let i = 0; i < hex.length; i++) {
     let index = an.indexOf(hex[i]);
     let rand = seededRandom(0, an.length);
-    let newIndex = (index-parseInt(rand)).mod(digs.length);
+    let newIndex = (index - parseInt(rand)).mod(digs.length);
     let newChar = digs[newIndex];
     result += newChar;
   }
   seed = Math.abs(hashCode(result));
-  while (result.length < length_of_title){
+  while (result.length < length_of_title) {
     let index = parseInt(seededRandom(0, digs.length));
     result += digs[index];
   }
@@ -128,27 +141,27 @@ function getTitle(address) {
 
 function searchTitle(search_str) {
   //randomly generate location numbers
-  let wall = ''+parseInt(Math.random()*3+1)
-  let shelf = ''+parseInt(Math.random()*4+1)
-  let volume = pad(''+parseInt(Math.random()*31+1), 2)
-  let locHash = hashCode(wall+shelf+volume+4);
-  let hex = '';
+  let wall = "" + parseInt(Math.random() * 3 + 1);
+  let shelf = "" + parseInt(Math.random() * 4 + 1);
+  let volume = pad("" + parseInt(Math.random() * 31 + 1), 2);
+  let locHash = hashCode(wall + shelf + volume + 4);
+  let hex = "";
   search_str = search_str.substr(0, length_of_title);
-  while (search_str.length < length_of_title){
-    search_str += ' ';
+  while (search_str.length < length_of_title) {
+    search_str += " ";
   }
   //hash of loc will be used to create a seeded RNG
   seed = Math.abs(locHash);
-  for (var i = 0; i < search_str.length; i++){
+  for (var i = 0; i < search_str.length; i++) {
     let index = digs.indexOf(search_str[i]);
     //for each calculated value of the rng, it will be added to the index value and modded to len of an
     let rand = seededRandom(0, digs.length);
-    let newIndex = (index+parseInt(rand)).mod(an.length);
+    let newIndex = (index + parseInt(rand)).mod(an.length);
     let newChar = an[newIndex];
     //hex will be built from the indexes translated into an
     hex += newChar;
   }
-  return hex+':'+wall+':'+shelf+':'+parseInt(volume)
+  return hex + ":" + wall + ":" + shelf + ":" + parseInt(volume);
 }
 
 module.exports = {
@@ -158,5 +171,5 @@ module.exports = {
   search,
   getPage,
   searchTitle,
-  getTitle
-}
+  getTitle,
+};
