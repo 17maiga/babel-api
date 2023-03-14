@@ -39,9 +39,15 @@ app.get("/api/find/:text", (req, res) => {
     );
     return;
   }
+  const address = library.search(req.params["text"]);
+  const [room, wall, shelf, volume, page] = address.split(":");
   res.send(
     JSON.stringify({
-      address: library.search(req.params["text"]),
+      room: room,
+      wall: wall,
+      shelf: shelf,
+      volume: volume,
+      page: page,
     })
   );
 });
