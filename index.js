@@ -11,7 +11,7 @@ app.use(compression());
 app.use(helmet());
 app.use(express.json());
 
-app.get("/api/get-page", (req, res) => {
+app.post("/api/get-page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   const error = library.validateAddress(
     req.body["room"],
@@ -37,7 +37,7 @@ app.get("/api/get-page", (req, res) => {
   });
 });
 
-app.get("/api/find-page", (req, res) => {
+app.post("/api/find-page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   let text = req.body["text"];
   const error = library.validateText(text);
@@ -52,7 +52,7 @@ app.get("/api/find-page", (req, res) => {
   res.json(library.search(text));
 });
 
-app.get("/api/get-title/:address", (req, res) => {
+app.post("/api/get-title/:address", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (!library.validateAddress(req.params["address"])) {
     res.status(400);
@@ -62,7 +62,7 @@ app.get("/api/get-title/:address", (req, res) => {
   res.json({ title: library.getTitle(req.params["address"]) });
 });
 
-app.get("/api/find-title/", (req, res) => {
+app.post("/api/find-title/", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.json({ address: library.searchTitle(req.body) });
 });
