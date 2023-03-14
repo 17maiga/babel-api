@@ -9,56 +9,47 @@ const PORT = process.env.PORT || 3000;
 
 app.use(compression());
 app.use(helmet());
+app.use(express.json());
 
-app.get("/api/page/:address", (req, res) => {
+app.get("/api/get-page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateAddress(req.params["address"])) {
+  const error = library.validateAddress(
+    req.body["room"],
+    req.body["wall"],
+    req.body["shelf"],
+    req.body["volume"],
+    req.body["page"]
+  );
+  if (error !== null) {
     res.status(400);
-    res.send(JSON.stringify({ error: "Invalid address" }));
+    res.json({ error: error });
     return;
   }
-  res.send(
-    JSON.stringify({
-      page: library.getPage(req.params["address"]),
-    })
-  );
+  res.status(200);
+  res.json({
+    page: library.getPage(
+      req.body["room"],
+      req.body["wall"],
+      req.body["shelf"],
+      req.body["volume"],
+      req.body["page"]
+    ),
+  });
 });
 
-app.get("/api/find/:text", (req, res) => {
+app.get("/api/find-page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateText(req.params["text"])) {
+  let text = req.body["text"];
+  const error = library.validateText(text);
+  if (error !== null) {
     res.status(400);
-    res.send(
-      JSON.stringify({
-        error:
-          "Invalid text. " +
-          'Search text may only contain the following characters: "' +
-          library.allowedChars +
-          '"',
-      })
-    );
+    res.json({ error: error });
     return;
   }
-  const address = library.search(req.params["text"]);
-  const [room, wall, shelf, volume, page] = address.split(":");
-  res.send(
-    JSON.stringify({
-      room: room,
-      wall: wall,
-      shelf: shelf,
-      volume: volume,
-      page: page,
-    })
-  );
-});
-
-app.get("/api/find-title/", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.send(
-    JSON.stringify({
-      address: library.searchTitle(req.body),
-    })
-  );
+  if (req.body["exact"] === true)
+    text = text.padEnd(library.page_len, " ");
+  res.status(200);
+  res.json(library.search(text));
 });
 
 app.get("/api/get-title/:address", (req, res) => {
@@ -68,13 +59,13 @@ app.get("/api/get-title/:address", (req, res) => {
     res.send(JSON.stringify({ error: "Invalid address" }));
     return;
   }
-  res.send(
-    JSON.stringify({
-      title: library.getTitle(req.params["address"]),
-    })
-  );
+  res.json({ title: library.getTitle(req.params["address"]) });
+});
+
+app.get("/api/find-title/", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.json({ address: library.searchTitle(req.body) });
 });
 
 app.listen(PORT);
-
-console.log("Server running on port " + PORT);
+console.log(`Running on http://localhost:${PORT}`);
