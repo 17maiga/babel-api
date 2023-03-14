@@ -1,3 +1,9 @@
+function validateText(text) {
+  for (let i = 0; i < text.length; i++)
+    if (digs.indexOf(text[i]) === -1) return false;
+  return true;
+}
+
 function validateAddress(address) {
   let a = address.split(":");
   if (a.length !== 5) return false;
@@ -7,8 +13,8 @@ function validateAddress(address) {
   return !(Number.isNaN(a[4]) || a[4] < 0 || a[4] > 409);
 }
 
-const length_of_page = 3200;
-const length_of_title = 25;
+const PAGE_LEN = 3200;
+const TITLE_LEN = 25;
 
 let seed = 6;
 
@@ -48,6 +54,7 @@ Number.prototype.mod = function (n) {
 let an = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 // digs must be the same length as an
 let digs = "abcdefghijklmnopqrstuvwxyz, .aeiouy ";
+let allowedChars = "abcdefghijklmnopqrstuvwxyz, .";
 
 function search(search_str) {
   // randomly generate location numbers
@@ -57,7 +64,7 @@ function search(search_str) {
   let page = pad("" + parseInt(Math.random() * 409 + 1), 3);
   let locHash = hashCode(wall + shelf + volume + page);
   let hex = "";
-  let depth = parseInt(Math.random() * (length_of_page - search_str.length));
+  let depth = parseInt(Math.random() * (PAGE_LEN - search_str.length));
   for (let x = 0; x < depth; x++) {
     search_str = digs[parseInt(Math.random() * digs.length)] + search_str;
   }
@@ -86,7 +93,7 @@ function search(search_str) {
 }
 
 function getPage(address) {
-  //for each char of hex, it will be turned into the index value in the an string
+  //for each char of hex, it will be turned into the index value in the "an" string
   let addressArray = address.split(":");
   let hex = addressArray[0];
   let locHash = hashCode(
@@ -109,11 +116,11 @@ function getPage(address) {
   }
   //any leftover space will be filled with random numbers seeded by the hash of the result so far
   seed = Math.abs(hashCode(result));
-  while (result.length < length_of_page) {
+  while (result.length < PAGE_LEN) {
     let index = parseInt(seededRandom(0, digs.length));
     result += digs[index];
   }
-  return result.substr(result.length - length_of_page);
+  return result.slice(result.length - PAGE_LEN);
 }
 
 function getTitle(address) {
@@ -132,11 +139,11 @@ function getTitle(address) {
     result += newChar;
   }
   seed = Math.abs(hashCode(result));
-  while (result.length < length_of_title) {
+  while (result.length < TITLE_LEN) {
     let index = parseInt(seededRandom(0, digs.length));
     result += digs[index];
   }
-  return result.substr(result.length - length_of_title);
+  return result.slice(result.length - TITLE_LEN);
 }
 
 function searchTitle(search_str) {
@@ -146,8 +153,8 @@ function searchTitle(search_str) {
   let volume = pad("" + parseInt(Math.random() * 31 + 1), 2);
   let locHash = hashCode(wall + shelf + volume + 4);
   let hex = "";
-  search_str = search_str.substr(0, length_of_title);
-  while (search_str.length < length_of_title) {
+  search_str = search_str.slice(0, TITLE_LEN);
+  while (search_str.length < TITLE_LEN) {
     search_str += " ";
   }
   //hash of loc will be used to create a seeded RNG
@@ -166,8 +173,10 @@ function searchTitle(search_str) {
 
 module.exports = {
   validateAddress,
-  length_of_page,
-  length_of_title,
+  validateText,
+  page_len: PAGE_LEN,
+  title_len: TITLE_LEN,
+  allowedChars,
   search,
   getPage,
   searchTitle,

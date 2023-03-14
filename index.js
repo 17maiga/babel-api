@@ -24,11 +24,24 @@ app.get("/api/page/:address", (req, res) => {
   );
 });
 
-app.get("/api/find/", (req, res) => {
+app.get("/api/find/:text", (req, res) => {
+  if (!library.validateText(req.params["text"])) {
+    res.status(400);
+    res.send(
+      JSON.stringify({
+        error:
+          "Invalid text. " +
+          'Search text may only contain the following characters: "' +
+          library.allowedChars +
+          '"',
+      })
+    );
+    return;
+  }
   res.setHeader("Content-Type", "application/json");
   res.send(
     JSON.stringify({
-      address: library.search(req.body),
+      address: library.search(req.params["text"]),
     })
   );
 });
