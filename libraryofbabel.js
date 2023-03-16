@@ -116,10 +116,10 @@ function search(text) {
   let hex = genHex(locHash, text);
   return {
     room: hex,
-    wall: parseInt(wall),
-    shelf: parseInt(shelf),
-    book: parseInt(book),
-    page: parseInt(page),
+    wall: parseInt(wall) - 1,
+    shelf: parseInt(shelf) - 1,
+    book: parseInt(book) - 1,
+    page: parseInt(page) - 1,
   };
 }
 
