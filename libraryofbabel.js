@@ -13,12 +13,12 @@ function validateText(text) {
   return null;
 }
 
-function validateAddress(room, wall, shelf, volume, page) {
+function validateAddress(room, wall, shelf, book, page) {
   let missing = [];
   if (room === undefined) missing.push("room");
   if (wall === undefined) missing.push("wall");
   if (shelf === undefined) missing.push("shelf");
-  if (volume === undefined) missing.push("volume");
+  if (book === undefined) missing.push("book");
   if (page === undefined) missing.push("page");
   if (missing.length > 0) return "Missing parameters: " + missing.join(", ");
   if (room === "") return "room cannot be empty";
@@ -26,8 +26,8 @@ function validateAddress(room, wall, shelf, volume, page) {
     return "wall must be between 0 and 3";
   if (Number.isNaN(shelf) || shelf < 0 || shelf > 4)
     return "shelf must be between 0 and 4";
-  if (Number.isNaN(volume) || volume < 0 || volume > 31)
-    return "volume must be between 0 and 31";
+  if (Number.isNaN(book) || book < 0 || book > 31)
+    return "book must be between 0 and 31";
   if (Number.isNaN(page) || page < 0 || page > 409)
     return "page must be between 0 and 409";
   return null;
@@ -107,9 +107,9 @@ function genHex(locHash, search_str) {
 function search(text) {
   let wall = Math.round(Math.random() * 3 + 1).toString();
   let shelf = Math.round(Math.random() * 4 + 1).toString();
-  let volume = pad(Math.round(Math.random() * 31 + 1).toString(), 2);
+  let book = pad(Math.round(Math.random() * 31 + 1).toString(), 2);
   let page = pad(Math.round(Math.random() * 409 + 1).toString(), 3);
-  let locHash = hashCode(wall + shelf + volume + page);
+  let locHash = hashCode(wall + shelf + book + page);
   let depth = Math.round(Math.random() * (PAGE_LEN - text.length));
   for (let x = 0; x < depth; x++)
     text = digs[Math.round(Math.random() * digs.length)] + text;
@@ -118,15 +118,15 @@ function search(text) {
     room: hex,
     wall: parseInt(wall),
     shelf: parseInt(shelf),
-    volume: parseInt(volume),
+    book: parseInt(book),
     page: parseInt(page),
   };
 }
 
 
 
-function getPage(room, wall, shelf, volume, page) {
-  let locHash = hashCode(wall + shelf + pad(volume, 2) + pad(page, 3));
+function getPage(room, wall, shelf, book, page) {
+  let locHash = hashCode(wall + shelf + pad(book, 2) + pad(page, 3));
   let result = seedRandomForGen(locHash, room);
   while (result.length < PAGE_LEN) {
     let index = parseInt(seededRandom(0, digs.length));
@@ -135,8 +135,8 @@ function getPage(room, wall, shelf, volume, page) {
   return result.slice(result.length - PAGE_LEN);
 }
 
-function getTitle(room, wall, shelf, volume) {
-  let locHash = hashCode(wall + shelf + pad(volume, 2) + 4);
+function getTitle(room, wall, shelf, book) {
+  let locHash = hashCode(wall + shelf + pad(book, 2) + 4);
   let result = seedRandomForGen(locHash, room);
   while (result.length < TITLE_LEN) {
     let index = parseInt(seededRandom(0, digs.length));
@@ -148,14 +148,14 @@ function getTitle(room, wall, shelf, volume) {
 function searchTitle(text) {
   const wall = Math.round(Math.random() * 3 + 1).toString();
   const shelf = Math.round(Math.random() * 4 + 1).toString();
-  const volume = pad(Math.round(Math.random() * 31 + 1).toString(), 2);
-  let locHash = hashCode(wall + shelf + volume + 4);
+  const book = pad(Math.round(Math.random() * 31 + 1).toString(), 2);
+  let locHash = hashCode(wall + shelf + book + 4);
   text = text.slice(0, TITLE_LEN);
   while (text.length < TITLE_LEN) {
     text += " ";
   }
   let hex = genHex(locHash, text);
-  return [hex, wall, shelf, parseInt(volume), 0].join(":");
+  return [hex, wall, shelf, parseInt(book), 0].join(":");
 }
 
 module.exports = {
