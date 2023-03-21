@@ -10,6 +10,13 @@ const PORT = process.env.PORT || 3000;
 app.use(compression());
 app.use(helmet());
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
+
 app.get("/api/page/:address", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (!library.validateAddress(req.params["address"])) {
