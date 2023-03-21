@@ -17,7 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/page/:address", (req, res) => {
+app.post("/api/page/:address", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (!library.validateAddress(req.params["address"])) {
     res.status(400);
@@ -31,7 +31,7 @@ app.get("/api/page/:address", (req, res) => {
   );
 });
 
-app.get("/api/find/:text", (req, res) => {
+app.post("/api/find/:text", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (!library.validateText(req.params["text"])) {
     res.status(400);
@@ -59,7 +59,7 @@ app.get("/api/find/:text", (req, res) => {
   );
 });
 
-app.get("/api/find-title/", (req, res) => {
+app.post("/api/find-title/", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(
     JSON.stringify({
@@ -68,7 +68,7 @@ app.get("/api/find-title/", (req, res) => {
   );
 });
 
-app.get("/api/get-title/:address", (req, res) => {
+app.post("/api/get-title/:address", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (!library.validateAddress(req.params["address"])) {
     res.status(400);
