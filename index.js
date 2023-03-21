@@ -17,23 +17,23 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/api/page/:address", (req, res) => {
+app.post("/api/page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateAddress(req.params["address"])) {
+  if (!library.validateAddress(req.body["address"])) {
     res.status(400);
     res.send(JSON.stringify({ error: "Invalid address" }));
     return;
   }
   res.send(
     JSON.stringify({
-      page: library.getPage(req.params["address"]),
+      page: library.getPage(req.body["address"]),
     })
   );
 });
 
-app.post("/api/find/:text", (req, res) => {
+app.post("/api/find", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateText(req.params["text"])) {
+  if (!library.validateText(req.body["text"])) {
     res.status(400);
     res.send(
       JSON.stringify({
@@ -46,7 +46,7 @@ app.post("/api/find/:text", (req, res) => {
     );
     return;
   }
-  const address = library.search(req.params["text"]);
+  const address = library.search(req.body["text"]);
   const [room, wall, shelf, volume, page] = address.split(":");
   res.send(
     JSON.stringify({
@@ -63,21 +63,21 @@ app.post("/api/find-title/", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(
     JSON.stringify({
-      address: library.searchTitle(req.body),
+      address: library.searchTitle(req.body["title"]),
     })
   );
 });
 
-app.post("/api/get-title/:address", (req, res) => {
+app.post("/api/get-title", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateAddress(req.params["address"])) {
+  if (!library.validateAddress(req.body["address"])) {
     res.status(400);
     res.send(JSON.stringify({ error: "Invalid address" }));
     return;
   }
   res.send(
     JSON.stringify({
-      title: library.getTitle(req.params["address"]),
+      title: library.getTitle(req.body["address"]),
     })
   );
 });
