@@ -23,12 +23,19 @@ app.use((req, res, next) => {
 
 app.post("/api/page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateAddress(req.body["address"])) {
+  const room = req.body["room"];
+  const wall = req.body["wall"];
+  const shelf = req.body["shelf"];
+  const volume = req.body["volume"];
+  const page = req.body["page"];
+  const error = library.validateAddress(room, wall, shelf, volume, page);
+  if (error) {
     res.status(400);
-    res.json({ error: "Invalid address" });
-    return;
+    res.json({ error: error });
+  } else {
+    res.status(200);
+    res.json({ page: library.getPage(room, wall, shelf, volume, page) });
   }
-  res.json({ page: library.getPage(req.body["address"]) });
 });
 
 app.post("/api/find", (req, res) => {

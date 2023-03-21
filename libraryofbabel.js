@@ -4,13 +4,24 @@ function validateText(text) {
   return true;
 }
 
-function validateAddress(address) {
-  let a = address.split(":");
-  if (a.length !== 5) return false;
-  if (Number.isNaN(a[1]) || a[1] < 0 || a[1] > 3) return false;
-  if (Number.isNaN(a[2]) || a[2] < 0 || a[2] > 4) return false;
-  if (Number.isNaN(a[3]) || a[3] < 0 || a[3] > 31) return false;
-  return !(Number.isNaN(a[4]) || a[4] < 0 || a[4] > 409);
+function validateAddress(room, wall, shelf, volume, page) {
+  let missing = [];
+  if (room === undefined || room === null) missing.push("room");
+  if (wall === undefined || wall === null) missing.push("wall");
+  if (shelf === undefined || shelf === null) missing.push("shelf");
+  if (volume === undefined || volume === null) missing.push("volume");
+  if (page === undefined || page === null) missing.push("page");
+  if (missing.length > 0) return "Missing parameters: " + missing.join(", ");
+  if (room === "") return "Invalid parameter: room must be a non empty string.";
+  if (Number.isNaN(wall) || wall < 0 || wall > 3)
+    return "Invalid parameter: wall must be a number between 0 and 3.";
+  if (Number.isNaN(shelf) || shelf < 0 || shelf > 4)
+    return "Invalid parameter: shelf must be a number between 0 and 4.";
+  if (Number.isNaN(volume) || volume < 0 || volume > 31)
+    return "Invalid parameter: volume must be a number between 0 and 31.";
+  if (Number.isNaN(page) || page < 0 || page > 409)
+    return "Invalid parameter: page must be a number between 0 and 409.";
+  return null;
 }
 
 const PAGE_LEN = 3200;
@@ -52,12 +63,10 @@ Number.prototype.mod = function (n) {
 };
 
 let an = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-// digs must be the same length as an
 let digs = "abcdefghijklmnopqrstuvwxyz, .aeiouy ";
 let allowedChars = "abcdefghijklmnopqrstuvwxyz, .";
 
 function search(search_str) {
-  // randomly generate location numbers
   let wall = "" + parseInt(Math.random() * 3 + 1);
   let shelf = "" + parseInt(Math.random() * 4 + 1);
   let volume = pad("" + parseInt(Math.random() * 31 + 1), 2);
@@ -68,15 +77,12 @@ function search(search_str) {
   for (let x = 0; x < depth; x++) {
     search_str = digs[parseInt(Math.random() * digs.length)] + search_str;
   }
-  // hash of loc will be used to create a seeded RNG
   seed = Math.abs(locHash);
   for (let i = 0; i < search_str.length; i++) {
     let index = digs.indexOf(search_str[i]);
-    //for each calculated value of the rng, it will be added to the index value and modded to len of an
     let rand = seededRandom(0, digs.length);
     let newIndex = (index + parseInt(rand)).mod(an.length);
     let newChar = an[newIndex];
-    //hex will be built from the indexes translated into an
     hex += newChar;
   }
   return (
@@ -92,29 +98,17 @@ function search(search_str) {
   );
 }
 
-function getPage(address) {
-  //for each char of hex, it will be turned into the index value in the "an" string
-  let addressArray = address.split(":");
-  let hex = addressArray[0];
-  let locHash = hashCode(
-    addressArray[1] +
-      addressArray[2] +
-      pad(addressArray[3], 2) +
-      pad(addressArray[4], 3)
-  );
-  //hash of loc will be used to create a seeded RNG
+function getPage(room, wall, shelf, volume, page) {
+  let locHash = hashCode(wall + shelf + pad(volume, 2) + pad(page, 3));
   seed = Math.abs(locHash);
   let result = "";
-  for (let i = 0; i < hex.length; i++) {
-    let index = an.indexOf(hex[i]);
-    //for each calculated value of the rng, it will be subtracted from the index value and modded to len of digs
+  for (let i = 0; i < room.length; i++) {
+    let index = an.indexOf(room[i]);
     let rand = seededRandom(0, an.length);
     let newIndex = (index - parseInt(rand)).mod(digs.length);
     let newChar = digs[newIndex];
-    //document will be built from the indexes translated into digs
     result += newChar;
   }
-  //any leftover space will be filled with random numbers seeded by the hash of the result so far
   seed = Math.abs(hashCode(result));
   while (result.length < PAGE_LEN) {
     let index = parseInt(seededRandom(0, digs.length));
@@ -147,7 +141,6 @@ function getTitle(address) {
 }
 
 function searchTitle(search_str) {
-  //randomly generate location numbers
   let wall = "" + parseInt(Math.random() * 3 + 1);
   let shelf = "" + parseInt(Math.random() * 4 + 1);
   let volume = pad("" + parseInt(Math.random() * 31 + 1), 2);
@@ -157,15 +150,12 @@ function searchTitle(search_str) {
   while (search_str.length < TITLE_LEN) {
     search_str += " ";
   }
-  //hash of loc will be used to create a seeded RNG
   seed = Math.abs(locHash);
   for (var i = 0; i < search_str.length; i++) {
     let index = digs.indexOf(search_str[i]);
-    //for each calculated value of the rng, it will be added to the index value and modded to len of an
     let rand = seededRandom(0, digs.length);
     let newIndex = (index + parseInt(rand)).mod(an.length);
     let newChar = an[newIndex];
-    //hex will be built from the indexes translated into an
     hex += newChar;
   }
   return hex + ":" + wall + ":" + shelf + ":" + parseInt(volume);
