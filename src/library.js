@@ -1,7 +1,14 @@
 function validateText(text) {
+  if (text === undefined || text === null) return "Missing parameter: text.";
+  if (text.length > PAGE_LEN) return "Invalid parameter: text is too long.";
+  if (text.length === 0) return "Invalid parameter: text is empty.";
   for (let i = 0; i < text.length; i++)
-    if (digs.indexOf(text[i]) === -1) return false;
-  return true;
+    if (allowedChars.indexOf(text[i]) === -1)
+      return (
+        "Invalid parameter: text can only contain the following characters: " +
+        allowedChars
+      );
+  return null;
 }
 
 function validateAddress(room, wall, shelf, volume, page) {
@@ -54,6 +61,7 @@ function hashCode(s) {
 }
 
 function pad(s, size) {
+  if (typeof s !== "string") s = s.toString();
   while (s.length < size) s = "0" + s;
   return s;
 }
@@ -85,21 +93,18 @@ function search(search_str) {
     let newChar = an[newIndex];
     hex += newChar;
   }
-  return (
-    hex +
-    ":" +
-    wall +
-    ":" +
-    shelf +
-    ":" +
-    parseInt(volume) +
-    ":" +
-    parseInt(page)
-  );
+  return {
+    room: hex,
+    wall: wall,
+    shelf: shelf,
+    volume: parseInt(volume),
+    page: parseInt(page),
+  };
 }
 
 function getPage(room, wall, shelf, volume, page) {
-  let locHash = hashCode(wall + shelf + pad(volume, 2) + pad(page, 3));
+  let locHash = hashCode(wall + shelf + pad("" + volume, 2) + pad("" + page, 3));
+  console.log(locHash);
   seed = Math.abs(locHash);
   let result = "";
   for (let i = 0; i < room.length; i++) {

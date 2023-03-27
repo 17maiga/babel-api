@@ -2,7 +2,8 @@
 const express = require("express");
 const compression = require("compression");
 const helmet = require("helmet");
-const library = require("./libraryofbabel");
+
+const library = require("./library");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,26 +41,19 @@ app.post("/api/page", (req, res) => {
 
 app.post("/api/find", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateText(req.body["text"])) {
+  let text = req.body["text"];
+  const error = library.validateText(text);
+  if (error) {
     res.status(400);
-    res.json({
-      error:
-        "Invalid text. " +
-        'Search text may only contain the following characters: "' +
-        library.allowedChars +
-        '"',
-    });
-    return;
+    res.json({ error: error });
+  } else {
+    if (req.body["exact"] !== undefined && req.body["exact"] === true)
+      text = text.padEnd(library.page_len, " ");
+    res.status(200);
+    let results = library.search(text);
+    console.log(results);
+    res.json(results);
   }
-  const address = library.search(req.body["text"]);
-  const [room, wall, shelf, volume, page] = address.split(":");
-  res.json({
-    room: room,
-    wall: wall,
-    shelf: shelf,
-    volume: volume,
-    page: page,
-  });
 });
 
 app.post("/api/find-title/", (req, res) => {
