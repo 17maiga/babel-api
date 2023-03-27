@@ -50,9 +50,7 @@ app.post("/api/find", (req, res) => {
     if (req.body["exact"] !== undefined && req.body["exact"] === true)
       text = text.padEnd(library.page_len, " ");
     res.status(200);
-    let results = library.search(text);
-    console.log(results);
-    res.json(results);
+    res.json(library.search(text));
   }
 });
 
