@@ -3,7 +3,7 @@ Description=Babel API
 After=apache2.service
 
 [Service]
-ExecStart=/home/ubuntu/.nvm/versions/node/v19.7.0/bin/node /home/ubuntu/dev/babel-api/index.js
+ExecStart=/home/ubuntu/.nvm/versions/node/v19.7.0/bin/node /home/ubuntu/dev/babel-api/src/index.js
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
