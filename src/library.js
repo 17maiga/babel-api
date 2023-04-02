@@ -15,7 +15,8 @@ function validateAddress(room, wall, shelf, volume, page) {
   if (volume === undefined || volume === null) missing.push("volume");
   if (page === undefined || page === null) missing.push("page");
   if (missing.length > 0) return "Missing parameters: " + missing.join(", ");
-  if (room === "") return "Invalid parameter: room must be a non empty string.";
+  if (!/^[A-Z0-9]+$/.test(room))
+    return "Invalid parameter: room must be a string of uppercase letters and numbers.";
   if (Number.isNaN(wall) || wall < 0 || wall > 3)
     return "Invalid parameter: wall must be a number between 0 and 3.";
   if (Number.isNaN(shelf) || shelf < 0 || shelf > 4)
