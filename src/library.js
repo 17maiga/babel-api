@@ -127,7 +127,7 @@ function getPage(room, wall, shelf, volume, page) {
     let index = parseInt(seededRandom(0, digs.length));
     result += digs[index];
   }
-  return result.slice(result.length - PAGE_LEN);
+  return { page: result.slice(result.length - PAGE_LEN) };
 }
 
 function getTitle(room, wall, shelf, volume) {
@@ -149,7 +149,7 @@ function getTitle(room, wall, shelf, volume) {
     let index = parseInt(seededRandom(0, digs.length));
     result += digs[index];
   }
-  return result.slice(result.length - TITLE_LEN);
+  return { title: result.slice(result.length - TITLE_LEN) };
 }
 
 function searchTitle(search_str) {

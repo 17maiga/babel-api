@@ -35,7 +35,7 @@ app.post("/api/get/page", (req, res) => {
     res.json({ error: error });
   } else {
     res.status(200);
-    res.json({ page: library.getPage(room, wall, shelf, volume, page) });
+    res.json(library.getPage(room, wall, shelf, volume, page));
   }
 });
 
@@ -79,7 +79,7 @@ app.post("/api/get/title", (req, res) => {
     res.json({ error: error });
   } else {
     res.status(200);
-    res.json({ title: library.getTitle(room, wall, shelf, volume) });
+    res.json(library.getTitle(room, wall, shelf, volume));
   }
 });
 
