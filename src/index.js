@@ -39,6 +39,20 @@ app.post("/api/get/page", (req, res) => {
   }
 });
 
+app.post("/api/get/wall", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  const room = req.body["room"];
+  const wall = req.body["wall"];
+  const error = library.validateAddress(room, wall, 0, 0, 0);
+  if (error) {
+    res.status(400);
+    res.json({ error: error });
+  } else {
+    res.status(200);
+    res.json(library.getWall(room, wall));
+  }
+});
+
 app.post("/api/find/page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   let text = req.body["input"];

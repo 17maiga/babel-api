@@ -130,6 +130,17 @@ function getPage(room, wall, shelf, volume, page) {
   return { page: result.slice(result.length - PAGE_LEN) };
 }
 
+function getWall(room, wall) {
+  let res = {};
+  for (let shelf = 0; shelf < 5; shelf++) {
+    res[shelf] = {};
+    for (let volume = 0; volume < 32; volume++) {
+      res[shelf][volume] = getTitle(room, wall, shelf, volume);
+    }
+  }
+  return { wall: res };
+}
+
 function getTitle(room, wall, shelf, volume) {
   let hex = room;
   let locHash = hashCode(
@@ -188,6 +199,7 @@ module.exports = {
   allowedChars,
   search,
   getPage,
+  getWall,
   searchTitle,
   getTitle,
 };
