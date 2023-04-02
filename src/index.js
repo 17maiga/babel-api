@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/api/page", (req, res) => {
+app.post("/api/get/page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   const room = req.body["room"];
   const wall = req.body["wall"];
@@ -39,7 +39,7 @@ app.post("/api/page", (req, res) => {
   }
 });
 
-app.post("/api/find", (req, res) => {
+app.post("/api/find/page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   let text = req.body["text"];
   const error = library.validateText(text);
@@ -54,12 +54,12 @@ app.post("/api/find", (req, res) => {
   }
 });
 
-app.post("/api/find-title/", (req, res) => {
+app.post("/api/find/title/", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.json({ address: library.searchTitle(req.body["title"]) });
 });
 
-app.post("/api/get-title", (req, res) => {
+app.post("/api/get/title", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (!library.validateAddress(req.body["address"])) {
     res.status(400);
