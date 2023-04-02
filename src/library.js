@@ -31,6 +31,18 @@ function validateAddress(room, wall, shelf, volume, page) {
   return null;
 }
 
+function validateTitle(title) {
+  if (title === undefined || title === null)
+    return "Missing parameter: title.";
+  if (title.length > TITLE_LEN)
+    return "Invalid parameter: title is too long.";
+  if (title.length === 0)
+    return "Invalid parameter: title is empty.";
+  if (!/^[a-z ,.]+$/.test(title))
+    return "Invalid parameter: title can only contain the following characters: " + allowedChars;
+  return null;
+}
+
 const PAGE_LEN = 3200;
 const TITLE_LEN = 25;
 
@@ -155,19 +167,26 @@ function searchTitle(search_str) {
     search_str += " ";
   }
   seed = Math.abs(locHash);
-  for (var i = 0; i < search_str.length; i++) {
+  for (let i = 0; i < search_str.length; i++) {
     let index = digs.indexOf(search_str[i]);
     let rand = seededRandom(0, digs.length);
     let newIndex = (index + parseInt(rand)).mod(an.length);
     let newChar = an[newIndex];
     hex += newChar;
   }
-  return hex + ":" + wall + ":" + shelf + ":" + parseInt(volume);
+  return {
+    room: hex,
+    wall: wall,
+    shelf: shelf,
+    volume: parseInt(volume).toString(),
+    page: "0",
+  };
 }
 
 module.exports = {
   validateAddress,
   validateText,
+  validateTitle,
   page_len: PAGE_LEN,
   title_len: TITLE_LEN,
   allowedChars,

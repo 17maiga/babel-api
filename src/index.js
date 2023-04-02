@@ -56,7 +56,15 @@ app.post("/api/find/page", (req, res) => {
 
 app.post("/api/find/title/", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  res.json({ address: library.searchTitle(req.body["title"]) });
+  const title = req.body["title"];
+  const error = library.validateTitle(title);
+  if (error) {
+    res.status(400);
+    res.json({ error: error });
+  } else {
+    res.status(200);
+    res.json(library.searchTitle(title));
+  }
 });
 
 app.post("/api/get/title", (req, res) => {
