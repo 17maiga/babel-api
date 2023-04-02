@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "prod": "export NODE_ENV=production && node src/index.js"
+    "prod": "export NODE_ENV=production && node src/index.js",
+    "prettier": "prettier --write \"**/*.{js,jsx,json,css,md}\""
   },
   "author": {
     "name": "17maiga",

@@ -3,7 +3,10 @@ function validateText(text) {
   if (text.length > PAGE_LEN) return "Invalid parameter: text is too long.";
   if (text.length === 0) return "Invalid parameter: text is empty.";
   if (!/^[a-z ,.]+$/.test(text))
-    return "Invalid parameter: text can only contain the following characters: " + allowedChars;
+    return (
+      "Invalid parameter: text can only contain the following characters: " +
+      allowedChars
+    );
   return null;
 }
 
@@ -29,14 +32,14 @@ function validateAddress(room, wall, shelf, volume, page) {
 }
 
 function validateTitle(title) {
-  if (title === undefined || title === null)
-    return "Missing parameter: title.";
-  if (title.length > TITLE_LEN)
-    return "Invalid parameter: title is too long.";
-  if (title.length === 0)
-    return "Invalid parameter: title is empty.";
+  if (title === undefined || title === null) return "Missing parameter: title.";
+  if (title.length > TITLE_LEN) return "Invalid parameter: title is too long.";
+  if (title.length === 0) return "Invalid parameter: title is empty.";
   if (!/^[a-z ,.]+$/.test(title))
-    return "Invalid parameter: title can only contain the following characters: " + allowedChars;
+    return (
+      "Invalid parameter: title can only contain the following characters: " +
+      allowedChars
+    );
   return null;
 }
 
@@ -112,7 +115,9 @@ function search(search_str) {
 }
 
 function getPage(room, wall, shelf, volume, page) {
-  let locHash = hashCode(wall + shelf + pad("" + volume, 2) + pad("" + page, 3));
+  let locHash = hashCode(
+    wall + shelf + pad("" + volume, 2) + pad("" + page, 3)
+  );
   seed = Math.abs(locHash);
   let result = "";
   for (let i = 0; i < room.length; i++) {
@@ -143,9 +148,7 @@ function getWall(room, wall) {
 
 function getTitle(room, wall, shelf, volume) {
   let hex = room;
-  let locHash = hashCode(
-    wall + shelf + pad(volume, 2) + 4
-  );
+  let locHash = hashCode(wall + shelf + pad(volume, 2) + 4);
   seed = Math.abs(locHash);
   let result = "";
   for (let i = 0; i < hex.length; i++) {
