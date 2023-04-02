@@ -104,7 +104,6 @@ function search(search_str) {
 
 function getPage(room, wall, shelf, volume, page) {
   let locHash = hashCode(wall + shelf + pad("" + volume, 2) + pad("" + page, 3));
-  console.log(locHash);
   seed = Math.abs(locHash);
   let result = "";
   for (let i = 0; i < room.length; i++) {
