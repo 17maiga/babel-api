@@ -133,11 +133,10 @@ function getPage(room, wall, shelf, volume, page) {
   return result.slice(result.length - PAGE_LEN);
 }
 
-function getTitle(address) {
-  let addressArray = address.split(":");
-  let hex = addressArray[0];
+function getTitle(room, wall, shelf, volume) {
+  let hex = room;
   let locHash = hashCode(
-    addressArray[1] + addressArray[2] + pad(addressArray[3], 2) + 4
+    wall + shelf + pad(volume, 2) + 4
   );
   seed = Math.abs(locHash);
   let result = "";

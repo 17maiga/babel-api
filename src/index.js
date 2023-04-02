@@ -69,14 +69,19 @@ app.post("/api/find/title/", (req, res) => {
 
 app.post("/api/get/title", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  if (!library.validateAddress(req.body["address"])) {
+  const room = req.body["room"];
+  const wall = req.body["wall"];
+  const shelf = req.body["shelf"];
+  const volume = req.body["volume"];
+  const error = library.validateAddress(room, wall, shelf, volume, 0);
+  if (error) {
     res.status(400);
-    res.json({ error: "Invalid address" });
-    return;
+    res.json({ error: error });
+  } else {
+    res.status(200);
+    res.json({ title: library.getTitle(room, wall, shelf, volume) });
   }
-  res.json({ title: library.getTitle(req.body["address"]) });
 });
 
 app.listen(PORT);
-
 console.log("Server running on port " + PORT);
