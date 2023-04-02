@@ -2,12 +2,8 @@ function validateText(text) {
   if (text === undefined || text === null) return "Missing parameter: text.";
   if (text.length > PAGE_LEN) return "Invalid parameter: text is too long.";
   if (text.length === 0) return "Invalid parameter: text is empty.";
-  for (let i = 0; i < text.length; i++)
-    if (allowedChars.indexOf(text[i]) === -1)
-      return (
-        "Invalid parameter: text can only contain the following characters: " +
-        allowedChars
-      );
+  if (!/^[a-z ,.]+$/.test(text))
+    return "Invalid parameter: text can only contain the following characters: " + allowedChars;
   return null;
 }
 
