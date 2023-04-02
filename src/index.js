@@ -41,7 +41,7 @@ app.post("/api/get/page", (req, res) => {
 
 app.post("/api/find/page", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  let text = req.body["text"];
+  let text = req.body["input"];
   const error = library.validateText(text);
   if (error) {
     res.status(400);
@@ -56,7 +56,7 @@ app.post("/api/find/page", (req, res) => {
 
 app.post("/api/find/title/", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  const title = req.body["title"];
+  const title = req.body["input"];
   const error = library.validateTitle(title);
   if (error) {
     res.status(400);
