@@ -1,5 +1,6 @@
 "use strict";
 const express = require("express");
+const path = require("path");
 const compression = require("compression");
 const helmet = require("helmet");
 
@@ -12,8 +13,8 @@ app.use(compression());
 app.use(helmet());
 app.use(express.json());
 app.set("view engine", "pug");
-app.set("views", "./views");
-app.use(express.static("./public"));
+app.set("views", path.join(__dirname, "../views"));
+app.use(express.static(path.join(__dirname, "../public")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -26,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.render("index", { title: "Library", message: "Hello there!" });
+  res.render("index");
 });
 
 app.post("/api/get/page", (req, res) => {
