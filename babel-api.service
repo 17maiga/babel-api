@@ -3,13 +3,13 @@ Description=Babel API
 After=apache2.service
 
 [Service]
-ExecStart=/home/ubuntu/.nvm/versions/node/v19.7.0/bin/node /home/ubuntu/dev/babel-api/src/index.js
+ExecStart=node /prod/babel-api/src/index.js
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=babel-api
-User=ubuntu
-Group=ubuntu
+User=run
+Group=prod
 Environment=NODE_ENV=production
 
 [Install]
