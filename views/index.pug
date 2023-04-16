@@ -1,0 +1,190 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title Babel API Reference
+    link(rel='stylesheet', href='/style.css')
+  body
+    h1 Babel API Reference
+    h2 Endpoints
+    div.endpoint
+      div.url
+        code POST
+        code /api/get/page
+        span Get a specific page's contents.
+      div.params
+        b Parameters:
+        div.value
+          span.wrapper
+            code room: string
+          span The room id. Must be composed of uppercase letters and numbers only.
+        div.value
+          span.wrapper
+            code wall: number
+          span The wall number. Must be between 0 and 3.
+        div.value
+          span.wrapper
+            code shelf: number
+          span The shelf number. Must be between 0 and 4.
+        div.value
+          span.wrapper
+            code volume: number
+          span The volume number. Must be between 0 and 31.
+        div.value
+          span.wrapper
+            code page: number
+          span The page number. Must be between 0 and 409.
+      div.returns
+        b Returns:
+        div.value
+          code page: string
+          span The page's contents.
+      div.errors
+        b Errors (status code 400):
+        div.value
+          code error: string
+          span The error message.
+    div.endpoint
+      div.url
+        code POST
+        code /api/get/wall
+        span Get a list of all shelves and books on a wall.
+      div.params
+        b Parameters:
+        div.value
+          span.wrapper
+            code room: string
+          span The room id. Must be composed of uppercase letters and numbers only.
+        div.value
+          span.wrapper
+            code wall: number
+          span The wall number. Must be between 0 and 3.
+      div.returns
+        b Returns:
+        div.value
+          span.wrapper
+            code wall: Map&lt;number, Map&lt;number, string&gt;&gt;
+          span A map containing the titles of all books on the wall, indexed by shelf and volume number.
+      div.errors
+        b Errors (status code 400):
+        div.value
+          span.wrapper
+            code error: string
+          span The error message.
+    div.endpoint
+      div.url
+        code POST
+        code api/get/title
+        span Get the title of a book.
+      div.params
+        b Parameters:
+        div.value
+          span.wrapper
+            code room: string
+          span The room id. Must be composed of uppercase letters and numbers only.
+        div.value
+          span.wrapper
+            code wall: number
+          span The wall number. Must be between 0 and 3.
+        div.value
+          span.wrapper
+            code shelf: number
+          span The shelf number. Must be between 0 and 4.
+        div.value
+          span.wrapper
+            code volume: number
+          span The volume number. Must be between 0 and 31.
+      div.returns
+        b Returns:
+        div.value
+          span.wrapper
+            code title: string
+          span The title of the book.
+      div.errors
+        b Errors (status code 400):
+        div.value
+          span.wrapper
+            code error: string
+          span The error message.
+    div.endpoint
+      div.url
+        code POST
+        code /api/find/page
+        span Find a page address by its contents.
+      div.params
+        b Parameters:
+        div.value
+          span.wrapper
+            code input: string
+          span The text to search for.
+        div.value
+          span.wrapper
+            code exact: boolean | undefined
+          span Whether to search for an exact match (i.e. the page must contain only the search text, followed by spaces if necessary). Defaults to false.
+      div.returns
+        b Returns:
+        div.value
+          span.wrapper
+            code room: string
+          span The room id.
+        div.value
+          span.wrapper
+            code wall: number
+          span The wall number.
+        div.value
+          span.wrapper
+            code shelf: number
+          span The shelf number.
+        div.value
+          span.wrapper
+            code volume: number
+          span The volume number.
+        div.value
+          span.wrapper
+            code page: number
+          span The page number.
+      div.errors
+        b Errors (status code 400):
+        div.value
+          span.wrapper
+            code error: string
+          span The error message.
+    div.endpoint
+      div.url
+        code POST
+        code /api/find/title
+        span Find a book by its title.
+      div.params
+        b Parameters:
+        div.value
+          span.wrapper
+            code input: string
+          span The text to search for.
+      div.returns
+        b Returns:
+        div.value
+          span.wrapper
+            code room: string
+          span The room id.
+        div.value
+          span.wrapper
+            code wall: number
+          span The wall number.
+        div.value
+          span.wrapper
+            code shelf: number
+          span The shelf number.
+        div.value
+          span.wrapper
+            code volume: number
+          span The volume number.
+        div.value
+          span.wrapper
+            code page: number
+          span The page number. Always 0.
+      div.errors
+        b Errors (status code 400):
+        div.value
+          span.wrapper
+            code error: string
+          span The error message.

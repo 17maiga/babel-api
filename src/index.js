@@ -11,6 +11,9 @@ const PORT = process.env.PORT || 3000;
 app.use(compression());
 app.use(helmet());
 app.use(express.json());
+app.set("view engine", "pug");
+app.set("views", "./views");
+app.use(express.static("./public"));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,6 +23,10 @@ app.use((req, res, next) => {
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   next();
+});
+
+app.get("/", (req, res) => {
+  res.render("index", { title: "Library", message: "Hello there!" });
 });
 
 app.post("/api/get/page", (req, res) => {
